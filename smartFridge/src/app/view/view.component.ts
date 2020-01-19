@@ -30,14 +30,14 @@ export class ViewComponent implements OnInit {
     this.viewProducts = 0;
     this.viewRecipe = 0;
     this.stringProducts = new Array();
-    this.stringProducts.push('see products');
-    this.stringProducts.push('hide products');
+    this.stringProducts.push('See products');
+    this.stringProducts.push('Hide products');
     this.stringRecipe = new Array();
-    this.stringRecipe.push('see recipes');
-    this.stringRecipe.push('hide recipes');
+    this.stringRecipe.push('See recipes');
+    this.stringRecipe.push('Hide recipes');
     this.stringButton = new Array();
-    this.stringButton.push('add');
-    this.stringButton.push('added');
+    this.stringButton.push('Add');
+    this.stringButton.push('Added');
   }
   ngOnInit() {
     setInterval(() => {
@@ -50,7 +50,7 @@ export class ViewComponent implements OnInit {
   }
 
   goToRecipe(url: string) {
-    location.href = url;
+    window.open(url, '_blank')
   }
 
   addProduct() {
