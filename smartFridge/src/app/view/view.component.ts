@@ -12,6 +12,7 @@ const URLSECONDPART = '&app_id=a75732ea&app_key=a7f69a13f95037e6c8cbe8840b5d7a99
 export class ViewComponent implements OnInit {
   private temperature: number;
   private doorIsOpen: boolean;
+  private date: Date;
   private humidity: number;
   private productArray: Product[];
   private productToCookArray: Product[];
@@ -23,34 +24,43 @@ export class ViewComponent implements OnInit {
   protected stringProducts: string[];
   protected stringRecipe: string[];
   protected stringButton: string[];
+  protected colors: string[];
   constructor(private http: HttpClient) {
+    setInterval(() => {
+      this.date = new Date();
+    }, 1000);
     this.recipeArray = new Array();
     this.productArray = new Array();
     this.productToCookArray = new Array();
     this.viewProducts = 0;
     this.viewRecipe = 0;
     this.stringProducts = new Array();
-    this.stringProducts.push('see products');
-    this.stringProducts.push('hide products');
+    this.stringProducts.push('Display products');
+    this.stringProducts.push('Hide products');
     this.stringRecipe = new Array();
-    this.stringRecipe.push('see recipes');
-    this.stringRecipe.push('hide recipes');
+    this.stringRecipe.push('Display recipes');
+    this.stringRecipe.push('Hide recipes');
     this.stringButton = new Array();
-    this.stringButton.push('add');
-    this.stringButton.push('added');
+    this.stringButton.push('Add');
+    this.stringButton.push('Added');
+    this.colors = new Array();
+    this.colors.push('rgba(255, 0, 0, 0.5)');
+    this.colors.push('rgba(245, 171, 53, 1)');
+    this.colors.push('rgba(0, 255, 0, 0.5)');
   }
   ngOnInit() {
     setInterval(() => {
       this.http.get('http://localhost:5000').subscribe((response: any) => {
-        this.temperature = response.T;
-        this.humidity = response.H;
-        this.doorIsOpen = (response.D === 1);
+        console.dir(response);
+        this.temperature = Number((response[1] as string).split('-')[1]);
+        this.humidity = Number((response[0] as string).split('-')[1]);
+        this.doorIsOpen = Number((response[2] as string).split('-')[1]) !== 0;
       });
     }, 3000);
   }
 
   goToRecipe(url: string) {
-    location.href = url;
+    window.open(url, '_blank');
   }
 
   addProduct() {
@@ -118,18 +128,26 @@ export class ViewComponent implements OnInit {
       });
   }
 
-  isDangerTemperature(): boolean {
-    return this.temperature < 1 || this.temperature > 4;
+  checkTemp(): number {
+    let tempState: number;
+    if (this.temperature < 1 || this.temperature > 5) {
+      tempState = 0;
+    } else if ( this.temperature === 1 || this.temperature === 5) {
+      tempState = 1;
+    } else {
+      tempState = 2;
+    }
+    return tempState;
   }
 
   checkHumidity(): number {
     let humidityState: number;
     if (this.humidity < 25 || this.humidity > 40) {
-      humidityState = 3;
+      humidityState = 0;
     } else if (this.humidity < 28 || this.humidity > 37) {
-      humidityState = 2;
-    } else {
       humidityState = 1;
+    } else {
+      humidityState = 2;
     }
     return humidityState;
   }

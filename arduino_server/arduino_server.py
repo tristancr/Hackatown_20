@@ -4,7 +4,7 @@ from flask_jsonpify import jsonify
 import serial
 from threading import Thread
 
-port = "/dev/cu.usbmodem14101"
+port = "COM6"
 comm = serial.Serial(port, timeout=1)
 
 app = Flask(__name__)
