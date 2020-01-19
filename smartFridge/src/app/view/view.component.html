@@ -1,77 +1,119 @@
-<h2 > Welcome to Smart Fridge:</h2>
-<div *ngIf="this.temperature && this.humidity">
-    <table class="fridgeState">
-        <thead>
-          <tr>
-            <th scope="col" [ngClass]="{
-                'text-success':temperature === 3 || temperature === 2,
-                'text-warning':temperature === 4 || temperature === 1,
-                'text-danger': isDangerTemperature()
-              }">Temperture : {{ temperature }} | </th>
-            <th scope="col" [ngClass]="{
-                'text-success':checkHumidity() === 1,
-                'text-warning':checkHumidity() === 2,
-                'text-danger': checkHumidity() === 3
-              }">Humidity : {{ humidity }} | </th>
-            <th scope="col" class="text-success" *ngIf="!doorIsOpen">The door is closed</th>
-            <th scope="col" class="text-danger" *ngIf="doorIsOpen">The door is open</th>
-          </tr>
-        </thead>
-    </table>
-</div>
-<br>
-<div class="row">
-  <div class="col-sm-4">
-    <input type="text" [(ngModel)]="newProductName" class="form-control"> 
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" id="time" href="#">{{this.date}}</a>
+    </div>
   </div>
-  <div class="col-sm-4">
+</nav>
+
+<div class="jumbotron">
+  <div class="container text-center">
+    <h1>SmartFridge</h1>
+    <p>Une innovation à croquer ...</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"> Temperature </h5>
+          <p class="card-text" [ngClass]="{
+            'text-success':temperature === 3 || temperature === 2,
+            'text-warning':temperature === 4 || temperature === 1,
+            'text-danger': isDangerTemperature()
+          }">{{this.temperature}}</p>
+          <p class="card-text" *ngIf="!this.temperature">No value</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"> Humidity </h5>
+          <span class="card-text" [ngClass]="{
+            'text-success':temperature === 3 || temperature === 2,
+            'text-warning':temperature === 4 || temperature === 1,
+            'text-danger': isDangerTemperature()
+          }"> {{this.humidity}}</span>
+          <p class="card-text" *ngIf="!this.humidity">No value</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"> Door state </h5>
+          <p class="card-text text-danger" *ngIf="doorIsOpen">Open</p>
+          <p class="card-text text-succes" *ngIf="!doorIsOpen">Close</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><br><br>
+
+<div class="row">
+  <div class="col-sm-1"></div>
+  <div class="col-sm-5">
+    <input type="text" [(ngModel)]="newProductName" class="form-control">
+  </div>
+  <div class="col-sm-5">
     <input type="date" [(ngModel)]="newProductExpirationDate" class="form-control">
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-1">
     <button (click)="addProduct()" class="btn btn-primary"> Add Product </button>
   </div>
 </div>
 <br>
 <div *ngIf="productArray.length">
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Recipe</th>
-            <th scope="col">Time left until expiration</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let product of productArray; let index = index">
-            <th scope="row">{{index + 1}}</th>
-            <td>
-                {{ product.name }}
-            </td>
-            <td>
-                {{ calculateTimeLeft(index) }} day(s)
-            </td>
-            <td>
-                <button (click)="remove(index)" class="btn btn-danger"> <i class="fas fa-minus"></i> Consume </button>
-                <button (click)="changeButton(index)" *ngIf="productArray[index].isAdded" class="btn btn-info"> <i class='fas fa-trash'></i> Remove from the cook list</button>
-                <button (click)="changeButton(index)" *ngIf="!productArray[index].isAdded" class="btn btn-info"> <i class='fas fa-plus'></i> Add of the cook list</button>
-                <button class="btn btn-warning"> <i class='fas fa-hand-holding-heart'></i> Donate</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Recipe</th>
+        <th scope="col">Time left until expiration</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of productArray; let index = index">
+        <th scope="row">{{index + 1}}</th>
+        <td>
+          {{ product.name }}
+        </td>
+        <td>
+          {{ calculateTimeLeft(index) }} day(s)
+        </td>
+        <td>
+          <button (click)="remove(index)" class="btn btn-danger"> <i class="fas fa-minus"></i> Consume </button>
+          <button (click)="changeButton(index)" *ngIf="productArray[index].isAdded" class="btn btn-info"> <i
+              class='fas fa-trash'></i> Remove from the cook list</button>
+          <button (click)="changeButton(index)" *ngIf="!productArray[index].isAdded" class="btn btn-info"> <i
+              class='fas fa-plus'></i> Add of the cook list</button>
+          <button class="btn btn-warning"> <i class='fas fa-hand-holding-heart'></i> Donate</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <br>
-<button (click)="changeRecipe()" class="btn btn-primary"> {{ stringRecipe[viewRecipe] }} </button>
+<div>
+  <div class="col-sm-2">
+    <button (click)="changeRecipe()" class="btn btn-primary"> {{ stringRecipe[viewRecipe] }} </button>
+  </div>
+  <div class="col-sm-10"></div>
 <br>
 
 <div *ngIf="viewRecipe">
-    <div class="row">
-        <div class="col-sm-3" (click)="goToRecipe(recipe.url)" *ngFor="let recipe of recipeArray">
-            <h4> {{ recipe.nom }} </h4>
-            <img src="{{ recipe.image }}">
-        </div>
+  <div class="row">
+    <div class="col-sm-3" *ngFor="let recipe of recipeArray">
+      <div class="col-sm-1"></div>
+      <a href="recipe.url" target="_blank">
+        <h4> {{ recipe.nom }} </h4>
+        <img src="{{ recipe.image }}">
+      </a>
     </div>
+  </div>
 </div>

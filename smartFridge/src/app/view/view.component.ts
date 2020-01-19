@@ -30,10 +30,10 @@ export class ViewComponent implements OnInit {
     this.viewProducts = 0;
     this.viewRecipe = 0;
     this.stringProducts = new Array();
-    this.stringProducts.push('See products');
+    this.stringProducts.push('Display products');
     this.stringProducts.push('Hide products');
     this.stringRecipe = new Array();
-    this.stringRecipe.push('See recipes');
+    this.stringRecipe.push('Display recipes');
     this.stringRecipe.push('Hide recipes');
     this.stringButton = new Array();
     this.stringButton.push('Add');
