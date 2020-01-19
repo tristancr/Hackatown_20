@@ -28,7 +28,7 @@
       <div class="card">
         <div class="card-body" [ngStyle]="{'background-color': colors[checkHumidity()]}">
           <h5 class="card-title"> Humidity </h5>
-          <span class="card-text" *ngIf="this.temperature"> {{this.humidity}} % </span>
+          <span class="card-text" *ngIf="this.humidity"> {{this.humidity}} % </span>
           <p class="card-text" *ngIf="!this.humidity">Measuring ...</p>
         </div>
       </div>

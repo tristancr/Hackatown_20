@@ -51,10 +51,17 @@ export class ViewComponent implements OnInit {
   ngOnInit() {
     setInterval(() => {
       this.http.get('http://localhost:5000').subscribe((response: any) => {
-        console.dir(response);
-        this.temperature = Number((response[1] as string).split('-')[1]);
-        this.humidity = Number((response[0] as string).split('-')[1]);
-        this.doorIsOpen = Number((response[2] as string).split('-')[1]) !== 0;
+        for (let i = 0; i < 3; i++) {
+          if ((response[i] as string).includes('H')) {
+            this.humidity = Number((response[i] as string).split('-')[1]);
+          }
+          if ((response[i] as string).includes('T')) {
+            this.temperature = Number((response[i] as string).split('-')[1]);
+          }
+          if ((response[i] as string).includes('D')) {
+            this.doorIsOpen = Number((response[i] as string).split('-')[1]) !== 0;
+          }
+        }
       });
     }, 3000);
   }
