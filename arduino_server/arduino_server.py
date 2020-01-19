@@ -2,7 +2,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jsonpify import jsonify
 import serial
-from flask_cors import CORS
 
 port = "/dev/cu.usbmodem14101"
 comm = serial.Serial(port, timeout=1)
