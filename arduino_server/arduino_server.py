@@ -2,7 +2,8 @@ from flask import Flask
 from flask_jsonpify import jsonify
 import serial
 
-comm = serial.Serial("/dev/cu.usbmodem14101", timeout=1)
+port = "/dev/cu.usbmodem14101"
+comm = serial.Serial(port, timeout=1)
 
 app = Flask(__name__)
 
