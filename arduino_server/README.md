@@ -4,6 +4,7 @@
 
 ```
 pip install Flask
+pip install flask-cors
 pip install flask-jsonpify
 pip install flask-serial
 ```
