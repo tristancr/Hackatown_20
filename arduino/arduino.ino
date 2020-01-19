@@ -164,10 +164,10 @@ void loop() {
     }
   } else {
     start = millis();
+    door = 0;
   }
  
   canal();
-  door = 0;
   int chk = DHT.read11(DHT11_PIN);
   humidity = DHT.humidity;
   temperature = DHT.temperature;
