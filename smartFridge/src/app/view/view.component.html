@@ -1,5 +1,25 @@
 <h2 *ngIf="doorIsOpen"> Welcome to Smart Fridge: T: {{this.temperature}}, H: {{this.humidity}}, Door: Open </h2>
 <h2 *ngIf="!doorIsOpen"> Welcome to Smart Fridge: T: {{this.temperature}}, H: {{this.humidity}}, Door: Closed </h2>
+<div>
+    <table class="fridgeState">
+        <thead>
+          <tr>
+            <th scope="col" [ngClass]="{
+                'text-success':temperature === 3 || temperature === 2,
+                'text-warning':temperature === 4 || temperature === 1,
+                'text-danger': isDangerTemperature()
+              }">Temperture : {{ temperature }}</th>
+            <th scope="col" [ngClass]="{
+                'text-success':checkHumidity() === 1,
+                'text-warning':checkHumidity() === 2,
+                'text-danger': checkHumidity() === 3
+              }">Humidity : {{ humidityLevel }} </th>
+            <th scope="col" class="text-success" *ngIf="isDoorClosed">The door is close</th>
+            <th scope="col" class="text-danger" *ngIf="!isDoorClosed">The door is open</th>
+          </tr>
+        </thead>
+    </table>
+</div>
 <div class="row">
   <div class="col-sm-4">
     <input type="text" [(ngModel)]="newProductName" class="form-control"> 

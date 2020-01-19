@@ -46,7 +46,7 @@ export class ViewComponent implements OnInit {
         this.humidity = response.H;
         this.doorIsOpen = (response.D === 1);
       });
-    }, 1000);
+    }, 3000);
   }
 
   goToRecipe(url: string) {
@@ -116,5 +116,21 @@ export class ViewComponent implements OnInit {
         // response.hits[0]
         console.log(this.recipeArray);
       });
+  }
+
+  isDangerTemperature(): boolean {
+    return this.temperature < 1 || this.temperature > 4;
+  }
+
+  checkHumidity(): number {
+    let humidityState: number;
+    if (this.humidity < 25 || this.humidity > 40) {
+      humidityState = 3;
+    } else if (this.humidity < 28 || this.humidity > 37) {
+      humidityState = 2;
+    } else {
+      humidityState = 1;
+    }
+    return humidityState;
   }
 }
