@@ -17,37 +17,32 @@
   <div class="row">
     <div class="col-md">
       <div class="card">
-        <div class="card-body">
+        <div class="card-body" [ngStyle]="{'background-color': colors[checkTemp()]}">
           <h5 class="card-title"> Temperature </h5>
-          <p class="card-text" [ngClass]="{
-            'text-success':temperature === 3 || temperature === 2,
-            'text-warning':temperature === 4 || temperature === 1,
-            'text-danger': isDangerTemperature()
-          }">{{this.temperature}}</p>
+          <p class="card-text">{{this.temperature}}</p>
           <p class="card-text" *ngIf="!this.temperature">No value</p>
         </div>
       </div>
     </div>
     <div class="col-md">
       <div class="card">
-        <div class="card-body">
+        <div class="card-body" [ngStyle]="{'background-color': colors[checkHumidity()]}">
           <h5 class="card-title"> Humidity </h5>
-          <span class="card-text" [ngClass]="{
-            'text-success':temperature === 3 || temperature === 2,
-            'text-warning':temperature === 4 || temperature === 1,
-            'text-danger': isDangerTemperature()
-          }"> {{this.humidity}}</span>
+          <span class="card-text"> {{this.humidity}}</span>
           <p class="card-text" *ngIf="!this.humidity">No value</p>
         </div>
       </div>
     </div>
     <div class="col-md">
       <div class="card">
-        <div class="card-body">
+        <div class="card-body" *ngIf="doorIsOpen" [ngStyle]="{'background-color': 'rgba(255, 0, 0, 0.5)'}">
           <h5 class="card-title"> Door state </h5>
-          <p class="card-text text-danger" *ngIf="doorIsOpen">Open</p>
-          <p class="card-text text-succes" *ngIf="!doorIsOpen">Close</p>
+          <p class="card-text text-danger">Open</p>
         </div>
+        <div class="card-body" *ngIf="!doorIsOpen" [ngStyle]="{'background-color': 'rgba(0, 255, 0, 0.5)'}">
+            <h5 class="card-title"> Door state </h5>
+            <p class="card-text text-succes" >Close</p>
+          </div>
       </div>
     </div>
   </div>
