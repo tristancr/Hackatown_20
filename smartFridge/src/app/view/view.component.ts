@@ -10,6 +10,9 @@ const URLSECONDPART = '&app_id=a75732ea&app_key=a7f69a13f95037e6c8cbe8840b5d7a99
   styleUrls: ['./view.component.css']
 })
 export class ViewComponent implements OnInit {
+  private temperature: number;
+  private doorIsOpen: boolean;
+  private humidity: number;
   private productArray: Product[];
   private productToCookArray: Product[];
   @Input() newProductName: string;
@@ -37,6 +40,13 @@ export class ViewComponent implements OnInit {
     this.stringButton.push('added');
   }
   ngOnInit() {
+    setInterval(() => {
+      this.http.get('http://localhost:5000').subscribe((response: any) => {
+        this.temperature = response.T;
+        this.humidity = response.H;
+        this.doorIsOpen = (response.D === 1);
+      });
+    }, 1000);
   }
 
   goToRecipe(url: string) {
