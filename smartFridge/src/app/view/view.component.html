@@ -1,5 +1,5 @@
 <h2 > Welcome to Smart Fridge:</h2>
-<div>
+<div *ngIf="this.temperature && this.humidity">
     <table class="fridgeState">
         <thead>
           <tr>
@@ -7,13 +7,13 @@
                 'text-success':temperature === 3 || temperature === 2,
                 'text-warning':temperature === 4 || temperature === 1,
                 'text-danger': isDangerTemperature()
-              }">Temperture : {{ temperature }}</th>
+              }">Temperture : {{ temperature }} | </th>
             <th scope="col" [ngClass]="{
                 'text-success':checkHumidity() === 1,
                 'text-warning':checkHumidity() === 2,
                 'text-danger': checkHumidity() === 3
-              }">Humidity : {{ humidity }} </th>
-            <th scope="col" class="text-success" *ngIf="!doorIsOpen">The door is close</th>
+              }">Humidity : {{ humidity }} | </th>
+            <th scope="col" class="text-success" *ngIf="!doorIsOpen">The door is closed</th>
             <th scope="col" class="text-danger" *ngIf="doorIsOpen">The door is open</th>
           </tr>
         </thead>

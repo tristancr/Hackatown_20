@@ -42,15 +42,16 @@ export class ViewComponent implements OnInit {
   ngOnInit() {
     setInterval(() => {
       this.http.get('http://localhost:5000').subscribe((response: any) => {
-        this.temperature = response.T;
-        this.humidity = response.H;
-        this.doorIsOpen = (response.D === 1);
+        console.dir(response);
+        this.temperature = Number((response[1] as string).split('-')[1]);
+        this.humidity = Number((response[0] as string).split('-')[1]);
+        this.doorIsOpen = Number((response[2] as string).split('-')[1]) !== 0;
       });
     }, 3000);
   }
 
   goToRecipe(url: string) {
-    window.open(url, '_blank')
+    window.open(url, '_blank');
   }
 
   addProduct() {
