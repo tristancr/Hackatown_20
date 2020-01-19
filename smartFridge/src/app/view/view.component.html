@@ -1,0 +1,13 @@
+<p>view works!</p>
+<input type="text" [(ngModel)]="newProductName">
+<input type="date" [(ngModel)]="newProductExpirationDate">
+<button (click)="addProduct()"> add product </button>
+<button (click)="changeProduct()"> {{ stringProducts[viewProducts]}} </button>
+<button (click)="changeRecipe()"> {{ stringRecipe[viewRecipe] }} </button>
+<div *ngIf="viewRecipe">
+    <div *ngFor="let recipe of recipeArray">
+    <p>Title : {{ recipe.nom }} </p> 
+    <img src="{{ recipe.image }}">
+    <p><a href="{{ recipe.url }}" target="_blank">Link</a></p>
+    </div>
+</div>
