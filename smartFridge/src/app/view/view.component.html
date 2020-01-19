@@ -1,5 +1,4 @@
-<h2 *ngIf="doorIsOpen"> Welcome to Smart Fridge: T: {{this.temperature}}, H: {{this.humidity}}, Door: Open </h2>
-<h2 *ngIf="!doorIsOpen"> Welcome to Smart Fridge: T: {{this.temperature}}, H: {{this.humidity}}, Door: Closed </h2>
+<h2 > Welcome to Smart Fridge:</h2>
 <div>
     <table class="fridgeState">
         <thead>
@@ -13,9 +12,9 @@
                 'text-success':checkHumidity() === 1,
                 'text-warning':checkHumidity() === 2,
                 'text-danger': checkHumidity() === 3
-              }">Humidity : {{ humidityLevel }} </th>
-            <th scope="col" class="text-success" *ngIf="isDoorClosed">The door is close</th>
-            <th scope="col" class="text-danger" *ngIf="!isDoorClosed">The door is open</th>
+              }">Humidity : {{ humidity }} </th>
+            <th scope="col" class="text-success" *ngIf="!doorIsOpen">The door is close</th>
+            <th scope="col" class="text-danger" *ngIf="doorIsOpen">The door is open</th>
           </tr>
         </thead>
     </table>
