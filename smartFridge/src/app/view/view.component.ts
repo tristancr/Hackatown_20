@@ -12,7 +12,7 @@ const URLSECONDPART = '&app_id=a75732ea&app_key=a7f69a13f95037e6c8cbe8840b5d7a99
 export class ViewComponent implements OnInit {
   private temperature: number;
   private doorIsOpen: boolean;
-  private date: string;
+  private date: Date;
   private humidity: number;
   private productArray: Product[];
   private productToCookArray: Product[];
@@ -26,6 +26,9 @@ export class ViewComponent implements OnInit {
   protected stringButton: string[];
   protected colors: string[];
   constructor(private http: HttpClient) {
+    setInterval(() => {
+      this.date = new Date();
+    }, 1000);
     this.recipeArray = new Array();
     this.productArray = new Array();
     this.productToCookArray = new Array();
@@ -53,8 +56,6 @@ export class ViewComponent implements OnInit {
         this.humidity = Number((response[0] as string).split('-')[1]);
         this.doorIsOpen = Number((response[2] as string).split('-')[1]) !== 0;
       });
-      let d = new Date();
-      this.date = `${d.getHours()}:${d.getHours()}`;
     }, 3000);
   }
 
