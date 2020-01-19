@@ -8,9 +8,9 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 int trigPin = A2; 
 int echoPin = A3;
-long distance, cm, inches;
 
 int isDoorClosed() {
+  long distance;
   digitalWrite(trigPin, HIGH);
   delay(10);
   digitalWrite(trigPin, LOW);
@@ -33,6 +33,16 @@ void setup(){
 }
 
 void loop() {
+  while (isDoorClosed() == 0 ) {
+    digitalWrite(13, HIGH);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Door: Open");
+    delay(100);
+  }
+  digitalWrite(13, LOW);
+
+  
   lcd.clear();
   int chk = DHT.read11(DHT11_PIN);
   lcd.setCursor(0,0);
@@ -44,23 +54,43 @@ void loop() {
   lcd.print(DHT.temperature);
   lcd.print( (char)223);
   lcd.print("C");
+  delay(2000);
+
   if (DHT.temperature > 5) {
     lcd.clear(); 
     lcd.setCursor(0,0);
     lcd.print("Warning !");
     lcd.setCursor(0,1);
     lcd.print("Temp too high");
-    delay(1000);
+    delay(2000);
   }
-  delay(1000);
 
-  while (isDoorClosed() == 0 ) {
-    digitalWrite(13, HIGH);
-    lcd.clear();
+  if (DHT.temperature == 0) {
+    lcd.clear(); 
     lcd.setCursor(0,0);
-    lcd.print("Door: Open");
-    delay(100);
+    lcd.print("Warning !");
+    lcd.setCursor(0,1);
+    lcd.print("Temp too low");
+    delay(2000);
   }
-  digitalWrite(13, LOW);
-  delay(1000);
+
+  if (DHT.humidity < 25) {
+    lcd.clear(); 
+    lcd.setCursor(0,0);
+    lcd.print("Warning !");
+    lcd.setCursor(0,1);
+    lcd.print("Hum too low");
+    delay(2000);
+  }
+
+  if (DHT.humidity > 40) {
+    lcd.clear(); 
+    lcd.setCursor(0,0);
+    lcd.print("Warning !");
+    lcd.setCursor(0,1);
+    lcd.print("Hum too High");
+    delay(2000);
+  }
+
+  
 }
