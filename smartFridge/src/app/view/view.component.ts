@@ -24,6 +24,7 @@ export class ViewComponent implements OnInit {
   protected stringProducts: string[];
   protected stringRecipe: string[];
   protected stringButton: string[];
+  protected colors: string[];
   constructor(private http: HttpClient) {
     this.recipeArray = new Array();
     this.productArray = new Array();
@@ -39,6 +40,10 @@ export class ViewComponent implements OnInit {
     this.stringButton = new Array();
     this.stringButton.push('Add');
     this.stringButton.push('Added');
+    this.colors = new Array();
+    this.colors.push('rgba(255, 0, 0, 0.5)');
+    this.colors.push('rgba(245, 171, 53, 1)');
+    this.colors.push('rgba(0, 255, 0, 0.5)');
   }
   ngOnInit() {
     setInterval(() => {
@@ -122,18 +127,26 @@ export class ViewComponent implements OnInit {
       });
   }
 
-  isDangerTemperature(): boolean {
-    return this.temperature < 1 || this.temperature > 4;
+  checkTemp(): number {
+    let tempState: number;
+    if (this.temperature < 1 || this.temperature > 5) {
+      tempState = 0;
+    } else if ( this.temperature === 1 || this.temperature === 5) {
+      tempState = 1;
+    } else {
+      tempState = 2;
+    }
+    return tempState;
   }
 
   checkHumidity(): number {
     let humidityState: number;
     if (this.humidity < 25 || this.humidity > 40) {
-      humidityState = 3;
+      humidityState = 0;
     } else if (this.humidity < 28 || this.humidity > 37) {
-      humidityState = 2;
-    } else {
       humidityState = 1;
+    } else {
+      humidityState = 2;
     }
     return humidityState;
   }
