@@ -1,23 +1,56 @@
-<p>view works!</p>
-<input type="text" [(ngModel)]="newProductName">
-<input type="date" [(ngModel)]="newProductExpirationDate">
-<button (click)="addProduct()"> add product </button>
-<div>
-    <div *ngFor="let product of productArray; let index = index">
-        <p>Name : {{ product.name }}
-            <button (click)="remove(index)"> consumed </button>
-        </p>
-        <p>Time Left : {{ calculateTimeLeft(index) }} day(s)
-            <button (click)="changeButton(index)" *ngIf="productArray[index].isAdded"> Remove of the cook list</button>
-            <button (click)="changeButton(index)" *ngIf="!productArray[index].isAdded"> Add of the cook list</button>
-        </p>
-    </div>
+<h2> Welcome to Smart Fridge </h2>
+<div class="row">
+  <div class="col-sm-4">
+    <input type="text" [(ngModel)]="newProductName" class="form-control"> 
+  </div>
+  <div class="col-sm-4">
+    <input type="date" [(ngModel)]="newProductExpirationDate" class="form-control">
+  </div>
+  <div class="col-sm-4">
+    <button (click)="addProduct()" class="btn btn-primary"> Add Product </button>
+  </div>
 </div>
-<button (click)="changeRecipe()"> {{ stringRecipe[viewRecipe] }} </button>
+<br>
+<div *ngIf="productArray.length">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Recipe</th>
+            <th scope="col">Time left until expiration</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of productArray; let index = index">
+            <th scope="row">{{index + 1}}</th>
+            <td>
+                {{ product.name }}
+            </td>
+            <td>
+                {{ calculateTimeLeft(index) }} day(s)
+            </td>
+            <td>
+                <button (click)="remove(index)" class="btn btn-danger"> <i class="fas fa-minus"></i> Consume </button>
+                <button (click)="changeButton(index)" *ngIf="productArray[index].isAdded" class="btn btn-info"> <i class='fas fa-trash'></i> Remove from the cook list</button>
+                <button (click)="changeButton(index)" *ngIf="!productArray[index].isAdded" class="btn btn-info"> <i class='fas fa-plus'></i> Add of the cook list</button>
+                <button (click)="changeButton(index)" class="btn btn-warning"> <i class='fas fa-hand-holding-heart'></i> Donate</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+</div>
+
+<br>
+<button (click)="changeRecipe()" class="btn btn-primary"> {{ stringRecipe[viewRecipe] }} </button>
+<br>
+
 <div *ngIf="viewRecipe">
-    <div *ngFor="let recipe of recipeArray">
-        <p>Title : {{ recipe.nom }} </p>
-        <img src="{{ recipe.image }}">
-        <p><a href="{{ recipe.url }}" target="_blank">Link</a></p>
+    <div class="row">
+        <div class="col-sm-3" (click)="goToRecipe(recipe.url)" *ngFor="let recipe of recipeArray">
+            <h4> {{ recipe.nom }} </h4>
+            <img src="{{ recipe.image }}">
+        </div>
     </div>
 </div>
