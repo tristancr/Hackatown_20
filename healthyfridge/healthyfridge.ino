@@ -1,96 +1,103 @@
 #include <dht.h>
 #include <LiquidCrystal.h>
 
-#define DHT11_PIN 6
+#define DHT11_PIN       6
+#define LED_PIN         13
+#define HCSR04_TRIGPIN  A2
+#define HCSR04_ECHOPIN  A3
 
 dht DHT;
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-int trigPin = A2; 
-int echoPin = A3;
+byte downArrow[8] = {
+  0b00100, //   *
+  0b00100, //   *
+  0b00100, //   *
+  0b00100, //   *
+  0b00100, //   *
+  0b10101, // * * *
+  0b01110, //  ***
+  0b00100  //   *
+};
 
-int isDoorClosed() {
-  long distance;
-  digitalWrite(trigPin, HIGH);
+byte upArrow[8] = {
+  0b00100, //   *
+  0b01110, //  ***
+  0b10101, // * * *
+  0b00100, //   *
+  0b00100, //   *
+  0b00100, //   *
+  0b00100, //   *
+  0b00100  //   *
+};
+
+bool doorIsOpen() {
+  digitalWrite(HCSR04_TRIGPIN, HIGH);
   delay(10);
-  digitalWrite(trigPin, LOW);
+  digitalWrite(HCSR04_TRIGPIN, LOW);
+  
+  return (pulseIn(HCSR04_ECHOPIN, HIGH)*(0.17) > 130); // en millimetres
+}
 
-  distance = pulseIn(echoPin, HIGH)*(0.17) ; // en millimetres
-  Serial.println(distance);
-  if (distance > 130) {
-    return 0;
+void message(String message, int col, int row, bool clearLcd) {
+  if (clearLcd) {
+    lcd.clear();
   }
-  return 1;
+  lcd.setCursor(col, row);
+  lcd.print(message);
+}
+
+void displayHumidityTemperature(int humidity, int temperature) {
+  message("HUM  " + String(humidity) + " % ", 0, 0, true);
+  Serial.print("H");
+  if (humidity < 25) {
+    lcd.write(byte(0));
+    lcd.print(" " + String(humidity - 25) + " %");
+    Serial.print("H-");
+  } else if (humidity > 40) {
+    lcd.write(byte(1));
+    lcd.print(" " + String(humidity - 40) + " %");
+    Serial.print("H-");
+  }
+  Serial.println(humidity);
+  
+  message("TEMP " + String(temperature) + (char)223 + "C ", 0, 1, false);
+  Serial.print("T");
+  if (temperature > 5) {
+    lcd.write(byte(1));
+    lcd.print(" " + String(temperature - 5) + (char)223 + "C");
+    Serial.print("H-");
+  } else if (temperature == 0) {
+    lcd.write(byte(0));
+    Serial.print("L-");
+  }
+  Serial.println(temperature);
+  
+  delay(2000);
 }
  
 void setup(){
-  Serial.begin(9600);
+  lcd.createChar(0, downArrow);
+  lcd.createChar(1, upArrow);
   lcd.begin(16, 2);
   lcd.print("Loading");
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  pinMode(13, OUTPUT);
+  
+  pinMode(HCSR04_TRIGPIN, OUTPUT);
+  pinMode(HCSR04_ECHOPIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  
+  Serial.begin(9600);
 }
 
 void loop() {
-  while (isDoorClosed() == 0 ) {
-    digitalWrite(13, HIGH);
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Door: Open");
+  while(doorIsOpen()) {
+    digitalWrite(LED_PIN, HIGH);
+    message("Door open !", 0, 0, true);
+    Serial.println("D-1");
     delay(100);
   }
-  digitalWrite(13, LOW);
-
+  digitalWrite(LED_PIN, LOW);
   
-  lcd.clear();
   int chk = DHT.read11(DHT11_PIN);
-  lcd.setCursor(0,0);
-  lcd.print("Hum = ");
-  lcd.print(DHT.humidity);
-  lcd.print("%");
-  lcd.setCursor(0,1);
-  lcd.print("Temp = ");
-  lcd.print(DHT.temperature);
-  lcd.print( (char)223);
-  lcd.print("C");
-  delay(2000);
-
-  if (DHT.temperature > 5) {
-    lcd.clear(); 
-    lcd.setCursor(0,0);
-    lcd.print("Warning !");
-    lcd.setCursor(0,1);
-    lcd.print("Temp too high");
-    delay(2000);
-  }
-
-  if (DHT.temperature == 0) {
-    lcd.clear(); 
-    lcd.setCursor(0,0);
-    lcd.print("Warning !");
-    lcd.setCursor(0,1);
-    lcd.print("Temp too low");
-    delay(2000);
-  }
-
-  if (DHT.humidity < 25) {
-    lcd.clear(); 
-    lcd.setCursor(0,0);
-    lcd.print("Warning !");
-    lcd.setCursor(0,1);
-    lcd.print("Hum too low");
-    delay(2000);
-  }
-
-  if (DHT.humidity > 40) {
-    lcd.clear(); 
-    lcd.setCursor(0,0);
-    lcd.print("Warning !");
-    lcd.setCursor(0,1);
-    lcd.print("Hum too High");
-    delay(2000);
-  }
-
-  
+  displayHumidityTemperature(int(DHT.humidity), int(DHT.temperature));
 }
