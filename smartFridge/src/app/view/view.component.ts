@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Recipe } from './recipe';
 import { HttpClient } from '@angular/common/http';
 import { Product } from './product';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 const URLFIRSTPART = 'https://api.edamam.com/search?q=';
 const URLSECONDPART = '&app_id=a75732ea&app_key=a7f69a13f95037e6c8cbe8840b5d7a99';
 @Component({
@@ -20,6 +21,9 @@ export class ViewComponent implements OnInit {
   protected stringProducts: string[];
   protected stringRecipe: string[];
   protected stringButton: string[];
+  protected temperature: number;
+  protected humidityLevel: number;
+  protected isDoorClosed: boolean;
   constructor(private http: HttpClient) {
     this.recipeArray = new Array();
     this.productArray = new Array();
@@ -35,6 +39,9 @@ export class ViewComponent implements OnInit {
     this.stringButton = new Array();
     this.stringButton.push('add');
     this.stringButton.push('added');
+    this.temperature = 9;
+    this.humidityLevel = 20;
+    this.isDoorClosed = false;
   }
   ngOnInit() {
   }
@@ -106,5 +113,21 @@ export class ViewComponent implements OnInit {
         // response.hits[0]
         console.log(this.recipeArray);
       });
+  }
+
+  isDangerTemperature(): boolean {
+    return this.temperature < 1 || this.temperature > 4;
+  }
+
+  checkHumidity(): number {
+    let humidityState: number;
+    if (this.humidityLevel < 25 || this.humidityLevel > 40) {
+      humidityState = 3;
+    } else if (this.humidityLevel < 28 || this.humidityLevel > 37) {
+      humidityState = 2;
+    } else {
+      humidityState = 1;
+    }
+    return humidityState;
   }
 }
