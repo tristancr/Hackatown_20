@@ -39,6 +39,10 @@ export class ViewComponent implements OnInit {
   ngOnInit() {
   }
 
+  goToRecipe(url: string) {
+    location.href = url;
+  }
+
   addProduct() {
     this.productArray.push({
       name: this.newProductName,
