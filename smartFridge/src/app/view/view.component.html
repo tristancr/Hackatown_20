@@ -2,12 +2,22 @@
 <input type="text" [(ngModel)]="newProductName">
 <input type="date" [(ngModel)]="newProductExpirationDate">
 <button (click)="addProduct()"> add product </button>
-<button (click)="changeProduct()"> {{ stringProducts[viewProducts]}} </button>
+<div>
+    <div *ngFor="let product of productArray; let index = index">
+        <p>Name : {{ product.name }}
+            <button (click)="remove(index)"> consumed </button>
+        </p>
+        <p>Time Left : {{ calculateTimeLeft(index) }} day(s)
+            <button (click)="changeButton(index)" *ngIf="productArray[index].isAdded"> Remove of the cook list</button>
+            <button (click)="changeButton(index)" *ngIf="!productArray[index].isAdded"> Add of the cook list</button>
+        </p>
+    </div>
+</div>
 <button (click)="changeRecipe()"> {{ stringRecipe[viewRecipe] }} </button>
 <div *ngIf="viewRecipe">
     <div *ngFor="let recipe of recipeArray">
-    <p>Title : {{ recipe.nom }} </p> 
-    <img src="{{ recipe.image }}">
-    <p><a href="{{ recipe.url }}" target="_blank">Link</a></p>
+        <p>Title : {{ recipe.nom }} </p>
+        <img src="{{ recipe.image }}">
+        <p><a href="{{ recipe.url }}" target="_blank">Link</a></p>
     </div>
 </div>
