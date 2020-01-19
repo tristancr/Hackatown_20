@@ -123,7 +123,6 @@ void setup(){
   pinMode(HCSR04_ECHOPIN, INPUT);
   
   Serial.begin(9600); // Computer
-  //Serial.begin(57600); // Bluetooth
 }
 
 void loop() {
