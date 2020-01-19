@@ -17,7 +17,6 @@ export class ViewComponent implements OnInit {
   private recipeArray: Recipe[];
   private viewProducts: number;
   private viewRecipe: number;
-  private viewButton: number;
   protected stringProducts: string[];
   protected stringRecipe: string[];
   protected stringButton: string[];
@@ -27,7 +26,6 @@ export class ViewComponent implements OnInit {
     this.productToCookArray = new Array();
     this.viewProducts = 0;
     this.viewRecipe = 0;
-    this.viewButton = 0;
     this.stringProducts = new Array();
     this.stringProducts.push('see products');
     this.stringProducts.push('hide products');
