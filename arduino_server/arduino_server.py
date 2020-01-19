@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jsonpify import jsonify
 import serial
+from threading import Thread
 
 port = "COM6"
 comm = serial.Serial(port, timeout=1)
@@ -11,10 +12,16 @@ CORS(app)
 
 @app.route("/")
 def arduino():
+    count = 0
+    comm.write("A".encode("utf-8"))
+
     result = {}
-    for i in range(3):
-        r = comm.readline()
-        l = r.decode("ascii").rstrip().split("-")
-        result[l[0]] = int(l[1])
+    
+    while (count < 3):
+        r = comm.readline().decode("ascii").rstrip()
+
+        if (not(r == "" or r == "A")):
+            result[count] = r
+            count += 1
     
     return jsonify(result)

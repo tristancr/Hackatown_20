@@ -12,6 +12,9 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 unsigned long start;
 bool humidityOK = false;
 bool temperatureOK = false;
+int humidity = 0;
+int temperature = 0;
+int door = 0;
 
 byte downArrow[8] = {
   0b00100, //   *
@@ -52,7 +55,7 @@ void message(String message, int col, int row, bool clearLcd) {
   lcd.print(message);
 }
 
-void displayHumidityTemperature(int humidity, int temperature) {
+void displayHumidityTemperature() {
   message("HUM  " + String(humidity) + " % ", 0, 0, true);
   
   humidityOK = false;
@@ -65,7 +68,6 @@ void displayHumidityTemperature(int humidity, int temperature) {
   } else {
     humidityOK = true;
   }
-  Serial.println("H-" + String(humidity));
   
   message("TEMP " + String(temperature) + (char)223 + "C ", 0, 1, false);
 
@@ -78,7 +80,6 @@ void displayHumidityTemperature(int humidity, int temperature) {
   } else {
     temperatureOK = true;
   }
-  Serial.println("T-" + String(temperature));
 
   if (humidityOK && temperatureOK) {
       digitalWrite(LED_PIN, LOW);
@@ -89,7 +90,7 @@ void displayHumidityTemperature(int humidity, int temperature) {
   delay(2000);
 }
 
-void alertHumidityTemperature(int humidity, int temperature) {
+void alertHumidityTemperature() {
   message("HUM ", 0, 1, false);
   
   if (humidity < 25) {
@@ -97,7 +98,6 @@ void alertHumidityTemperature(int humidity, int temperature) {
   } else if (humidity > 40) {
     lcd.write(byte(1));
   }
-  Serial.println("H-" + String(humidity));
   
   message("TEMP ", 6, 1, false);
 
@@ -106,9 +106,21 @@ void alertHumidityTemperature(int humidity, int temperature) {
   } else if (temperature == 0) {
     lcd.write(byte(0));
   }
-  Serial.println("T-" + String(temperature));
   
   delay(2000);
+}
+
+void canal() {
+  while (Serial.available()) {
+    char inChar = Serial.read();
+    Serial.println(inChar);
+    
+    if (inChar == 'A') {
+      Serial.println("H-" + String(humidity));
+      Serial.println("T-" + String(temperature));
+      Serial.println("D-" + String(door));
+    }
+  }
 }
  
 void setup(){
@@ -121,19 +133,20 @@ void setup(){
   pinMode(LED_PIN, OUTPUT);
   pinMode(HCSR04_TRIGPIN, OUTPUT);
   pinMode(HCSR04_ECHOPIN, INPUT);
+
+  start = millis();
   
   Serial.begin(9600); // Computer
 }
 
 void loop() {
-  start = millis();
-  while(doorIsOpen()) {
+  canal();
+  if(doorIsOpen()) {
     int alert = DHT.read11(DHT11_PIN);
+    humidity = DHT.humidity;
+    temperature = DHT.temperature;
     
     if (millis() - start > 5000) {
-      message("Door open !", 0, 0, true);
-      delay(100);
-      
       tone(BUZZER_PIN, 300);
       digitalWrite(LED_PIN, HIGH);
       delay(500);
@@ -141,15 +154,22 @@ void loop() {
       digitalWrite(LED_PIN, LOW);
       delay(500);
 
-      Serial.println("D-2");
-      alertHumidityTemperature(int(DHT.humidity), int(DHT.temperature));
+      door = 2;
+      message("Door open !", 0, 0, true);
+      delay(100);
+      alertHumidityTemperature();
     } else {
-      Serial.println("D-1");
-      displayHumidityTemperature(int(DHT.humidity), int(DHT.temperature));
+      door = 1;
+      displayHumidityTemperature();
     }
+  } else {
+    start = millis();
   }
  
-  Serial.println("D-0");
+  canal();
+  door = 0;
   int chk = DHT.read11(DHT11_PIN);
-  displayHumidityTemperature(int(DHT.humidity), int(DHT.temperature));
+  humidity = DHT.humidity;
+  temperature = DHT.temperature;
+  displayHumidityTemperature();
 }
