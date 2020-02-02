@@ -12,6 +12,7 @@ const URLSECONDPART = '&app_id=a75732ea&app_key=a7f69a13f95037e6c8cbe8840b5d7a99
 export class ViewComponent implements OnInit {
   private temperature: number;
   private doorIsOpen: boolean;
+  private date: Date;
   private humidity: number;
   private productArray: Product[];
   private productToCookArray: Product[];
@@ -25,6 +26,9 @@ export class ViewComponent implements OnInit {
   protected stringButton: string[];
   protected colors: string[];
   constructor(private http: HttpClient) {
+    setInterval(() => {
+      this.date = new Date();
+    }, 1000);
     this.recipeArray = new Array();
     this.productArray = new Array();
     this.productToCookArray = new Array();
@@ -37,25 +41,33 @@ export class ViewComponent implements OnInit {
     this.stringRecipe.push('Display recipes');
     this.stringRecipe.push('Hide recipes');
     this.stringButton = new Array();
-    this.stringButton.push('add');
-    this.stringButton.push('added');
+    this.stringButton.push('Add');
+    this.stringButton.push('Added');
     this.colors = new Array();
     this.colors.push('rgba(255, 0, 0, 0.5)');
     this.colors.push('rgba(245, 171, 53, 1)');
     this.colors.push('rgba(0, 255, 0, 0.5)');
   }
   ngOnInit() {
-     setInterval(() => {
-       this.http.get('http://localhost:5000').subscribe((response: any) => {
-         this.temperature = response.T;
-         this.humidity = response.H;
-         this.doorIsOpen = (response.D === 1);
-       });
+    setInterval(() => {
+      this.http.get('http://localhost:5000').subscribe((response: any) => {
+        for (let i = 0; i < 3; i++) {
+          if ((response[i] as string).includes('H')) {
+            this.humidity = Number((response[i] as string).split('-')[1]);
+          }
+          if ((response[i] as string).includes('T')) {
+            this.temperature = Number((response[i] as string).split('-')[1]);
+          }
+          if ((response[i] as string).includes('D')) {
+            this.doorIsOpen = Number((response[i] as string).split('-')[1]) !== 0;
+          }
+        }
+      });
     }, 3000);
   }
 
   goToRecipe(url: string) {
-    location.href = url;
+    window.open(url, '_blank');
   }
 
   addProduct() {
