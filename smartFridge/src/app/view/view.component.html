@@ -103,12 +103,10 @@
 
 <div *ngIf="viewRecipe">
   <div class="row">
-    <div class="col-sm-3" *ngFor="let recipe of recipeArray">
+    <div class="col-sm-3" *ngFor="let recipe of recipeArray" (click)="goToRecipe(recipe.url)">
       <div class="col-sm-1"></div>
-      <a href="recipe.url" target="_blank">
         <h4> {{ recipe.nom }} </h4>
         <img src="{{ recipe.image }}">
-      </a>
     </div>
   </div>
 </div>
